@@ -4,13 +4,14 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.njackal.persistence.ComponentInit.PLAYER_SPEC;
 import static net.minecraft.server.command.CommandManager.*;
 
 public class SurvivalSpectator implements ModInitializer {
@@ -45,12 +46,17 @@ public class SurvivalSpectator implements ModInitializer {
 		var player = source.getPlayer();
 		assert player != null;
 		if(!player.isSpectator()) {
-			//todo save position
+			//todo save position (xyz, rotation, dim)
 			//todo save gamemode
+			GameMode gamemode = player.interactionManager.getGameMode();
+			Vec3d pos =  player.getPos();
+
 			player.changeGameMode(GameMode.SPECTATOR);
 		} else {
 			//todo put player back at old position
 			//todo set to original gamemode
+			Vec3d pos = PLAYER_SPEC.get(player).getPosition();
+			LOGGER.info(pos.toString());
 			player.changeGameMode(GameMode.SURVIVAL);
 		}
 

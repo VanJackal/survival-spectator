@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"com.njackal.ExampleModClient"
+		],
+		"cardinal-components": [
+			"com.njackal.persistence.ComponentInit"
 		]
 	},
 	"mixins": [
@@ -36,5 +39,10 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
+	},
+	"custom": {
+		"cardinal-components" : [
+			"survival-spectator:player_spectator"
+		]
 	}
 }
