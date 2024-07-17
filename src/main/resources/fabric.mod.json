@@ -1,25 +1,25 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "survival-spectator",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Survival Spectator",
+	"description": "Simple mod that adds /c command to toggle spectator in survival",
 	"authors": [
-		"Me!"
+		"VanJackal"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
+	"license": "",
 	"icon": "assets/modid/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"com.njackal.SurvivalSpectator"
 		],
 		"client": [
-			"com.example.ExampleModClient"
+			"com.njackal.ExampleModClient"
 		]
 	},
 	"mixins": [
@@ -36,6 +36,5 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
 	}
 }

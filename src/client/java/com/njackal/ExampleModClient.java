@@ -1,4 +1,4 @@
-package com.example;
+package com.njackal;
 
 import net.fabricmc.api.ClientModInitializer;
 
