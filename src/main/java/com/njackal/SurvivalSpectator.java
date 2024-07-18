@@ -4,12 +4,13 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,24 +51,34 @@ public class SurvivalSpectator implements ModInitializer {
 
 		var specData = PLAYER_SPEC.get(player);
 		if(!player.isSpectator()) {
-			//todo dimension
 			//get player details
 			Vec3d pos =  player.getPos();
 			GameMode gamemode = player.interactionManager.getGameMode();
-
+			Identifier dim = source.getWorld().getRegistryKey().getValue();
+			LOGGER.info(dim.toString());
 
 			//save details, and switch mode
-			specData.setData(pos, player.getPitch(), player.getYaw(), gamemode);
+			specData.setData(pos, player.getPitch(), player.getYaw(), gamemode, dim);
 			player.changeGameMode(GameMode.SPECTATOR);
 		} else {
-			//todo get dimension
-
 			//set gamemode to pre spectator mode
 			player.changeGameMode(specData.getGameMode());
 
 			//teleport back to start pos
 			Vec3d targetPos = specData.getPosition();
-			player.teleport(source.getWorld(), targetPos.x, targetPos.y, targetPos.z, specData.getYaw(),specData.getPitch());
+
+			//where the fuck is the dimension registry // todo
+			RegistryKey<World> dimension = null;
+			Identifier dimensionId = specData.getDim();
+			for (RegistryKey<World> dim:source.getServer().getWorldRegistryKeys()) {
+				if(dim.getValue().equals(dimensionId)) {
+					dimension = dim;
+					break;
+				}
+			}
+			if(dimension != null) {
+				player.teleport(source.getServer().getWorld(dimension), targetPos.x, targetPos.y, targetPos.z, specData.getYaw(),specData.getPitch());
+			} // default to just not teleporting if the dimension is somehow not found
 		}
 
 		return 1;

@@ -1,5 +1,6 @@
 package com.njackal.persistence;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -10,7 +11,7 @@ public interface IPlayerSpectatorComponent extends Component {
      * set the data of for the component
      * @param pos Position of the player
      */
-    void setData(Vec3d pos, float pitch, float yaw, GameMode gameMode);
+    void setData(Vec3d pos, float pitch, float yaw, GameMode gameMode, Identifier dim);
 
     /**
      * get the stored position
@@ -31,4 +32,9 @@ public interface IPlayerSpectatorComponent extends Component {
      * get the stored game mode
      */
     GameMode getGameMode();
-}// todo add more components
+
+    /**
+     * get the stored dimension
+     */
+    Identifier getDim();
+}
