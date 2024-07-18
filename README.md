@@ -4,4 +4,5 @@ the position they switched from.
 
 # Requirements
 - Fabric
+- Fabric API
 - [Cardinal Components API](https://modrinth.com/mod/cardinal-components-api)
