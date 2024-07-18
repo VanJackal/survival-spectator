@@ -1,9 +1,7 @@
-# Fabric Example Mod
+# Survival Spectator
+This mod allows all players to use `/c` to switch to spectator mode, using the command again will return the player to 
+the position they switched from.
 
-## Setup
-
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
-
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+# Requirements
+- Fabric
+- [Cardinal Components API](https://modrinth.com/mod/cardinal-components-api)
