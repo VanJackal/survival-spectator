@@ -1,7 +1,6 @@
 package com.njackal.persistence;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.ladysnake.cca.api.v3.component.Component;
