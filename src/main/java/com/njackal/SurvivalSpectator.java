@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -67,15 +68,8 @@ public class SurvivalSpectator implements ModInitializer {
 			//teleport back to start pos
 			Vec3d targetPos = specData.getPosition();
 
-			//where the fuck is the dimension registry // todo
-			RegistryKey<World> dimension = null;
-			Identifier dimensionId = specData.getDim();
-			for (RegistryKey<World> dim:source.getServer().getWorldRegistryKeys()) {
-				if(dim.getValue().equals(dimensionId)) {
-					dimension = dim;
-					break;
-				}
-			}
+			//dimension
+			RegistryKey<World> dimension = RegistryKey.of(RegistryKeys.WORLD, specData.getDim());// ... half hour to find this code KEKW
 			if(dimension != null) {
 				player.teleport(source.getServer().getWorld(dimension), targetPos.x, targetPos.y, targetPos.z, specData.getYaw(),specData.getPitch());
 			} // default to just not teleporting if the dimension is somehow not found
