@@ -6,6 +6,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.slf4j.Logger;
@@ -45,19 +47,27 @@ public class SurvivalSpectator implements ModInitializer {
 
 		var player = source.getPlayer();
 		assert player != null;
-		if(!player.isSpectator()) {
-			//todo save position (xyz, rotation, dim)
-			//todo save gamemode
-			GameMode gamemode = player.interactionManager.getGameMode();
-			Vec3d pos =  player.getPos();
 
+		var specData = PLAYER_SPEC.get(player);
+		if(!player.isSpectator()) {
+			//todo dimension
+			//get player details
+			Vec3d pos =  player.getPos();
+			GameMode gamemode = player.interactionManager.getGameMode();
+
+
+			//save details, and switch mode
+			specData.setData(pos, player.getPitch(), player.getYaw(), gamemode);
 			player.changeGameMode(GameMode.SPECTATOR);
 		} else {
-			//todo put player back at old position
-			//todo set to original gamemode
-			Vec3d pos = PLAYER_SPEC.get(player).getPosition();
-			LOGGER.info(pos.toString());
-			player.changeGameMode(GameMode.SURVIVAL);
+			//todo get dimension
+
+			//set gamemode to pre spectator mode
+			player.changeGameMode(specData.getGameMode());
+
+			//teleport back to start pos
+			Vec3d targetPos = specData.getPosition();
+			player.teleport(source.getWorld(), targetPos.x, targetPos.y, targetPos.z, specData.getYaw(),specData.getPitch());
 		}
 
 		return 1;
