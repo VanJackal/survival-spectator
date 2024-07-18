@@ -12,7 +12,7 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/survival-spectator/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
