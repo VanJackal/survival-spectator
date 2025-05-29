@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Set;
+
 import static com.njackal.persistence.ComponentInit.PLAYER_SPEC;
 import static net.minecraft.server.command.CommandManager.*;
 
@@ -71,7 +73,7 @@ public class SurvivalSpectator implements ModInitializer {
 			//dimension
 			RegistryKey<World> dimension = RegistryKey.of(RegistryKeys.WORLD, specData.getDim());// ... half hour to find this code KEKW
 			if(dimension != null) {
-				player.teleport(source.getServer().getWorld(dimension), targetPos.x, targetPos.y, targetPos.z, specData.getYaw(),specData.getPitch());
+				player.teleport(source.getServer().getWorld(dimension), targetPos.x, targetPos.y, targetPos.z, Set.of(), specData.getYaw(),specData.getPitch(),false);
 			} // default to just not teleporting if the dimension is somehow not found
 		}
 
