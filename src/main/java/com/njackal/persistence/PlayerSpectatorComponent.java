@@ -6,6 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
+import java.util.NoSuchElementException;
+
 public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     private Vec3d position;
     private float pitch;
@@ -56,19 +58,23 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     }
 
     @Override
-    public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        //position
-        double x = tag.getDouble("x");
-        double y = tag.getDouble("y");
-        double z = tag.getDouble("z");
-        this.position = new Vec3d(x, y, z);
-        //rotation
-        this.pitch = tag.getFloat("pitch");
-        this.yaw = tag.getFloat("yaw");
-        //gamemode
-        this.gameMode = GameMode.byId(tag.getInt("gameMode"));
-        //dimension
-        this.dim = Identifier.tryParse(tag.getString("dim"));
+    public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) throws NoSuchElementException {
+        try {
+            //position
+            double x = tag.getDouble("x").get();
+            double y = tag.getDouble("y").get();
+            double z = tag.getDouble("z").get();
+            this.position = new Vec3d(x, y, z);
+            //rotation
+            this.pitch = tag.getFloat("pitch").get();
+            this.yaw = tag.getFloat("yaw").get();
+            //gamemode
+            this.gameMode = GameMode.byId(tag.getString("gameMode").get());
+            //dimension
+            this.dim = Identifier.tryParse(tag.getString("dim").get());
+        } catch (NoSuchElementException e) { // this is to allow the schema to change (may have some weird side effects if someone logs out in spectator before the update)
+            return;
+        }
     }
 
     @Override
@@ -81,7 +87,7 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
         tag.putFloat("pitch", this.pitch);
         tag.putFloat("yaw", this.yaw);
         //gamemode
-        tag.putInt("mode", this.gameMode.getId());
+        tag.putString("mode", this.gameMode.getId());
         //dimension
         tag.putString("dim", this.dim.toString());
     }
