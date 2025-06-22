@@ -1,7 +1,7 @@
 package com.njackal.persistence;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -58,37 +58,37 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     }
 
     @Override
-    public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) throws NoSuchElementException {
+    public void readData(ReadView readView) throws NoSuchElementException {
         try {
             //position
-            double x = tag.getDouble("x").get();
-            double y = tag.getDouble("y").get();
-            double z = tag.getDouble("z").get();
+            double x = readView.getDouble("x",0);
+            double y = readView.getDouble("y",500);// kinda just hoping this is a safe fallback, generally these shouldn't be used though
+            double z = readView.getDouble("z",0);
             this.position = new Vec3d(x, y, z);
             //rotation
-            this.pitch = tag.getFloat("pitch").get();
-            this.yaw = tag.getFloat("yaw").get();
+            this.pitch = readView.getFloat("pitch",0);
+            this.yaw = readView.getFloat("yaw",0);
             //gamemode
-            this.gameMode = GameMode.byId(tag.getString("gameMode").get());
+            this.gameMode = GameMode.byId(readView.getString("gameMode",GameMode.SURVIVAL.asString()));
             //dimension
-            this.dim = Identifier.tryParse(tag.getString("dim").get());
+            this.dim = Identifier.tryParse(readView.getString("dim","minecraft:overworld"));
         } catch (NoSuchElementException e) { // this is to allow the schema to change (may have some weird side effects if someone logs out in spectator before the update)
             return;
         }
     }
 
     @Override
-    public void writeToNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+    public void writeData(WriteView writeView) {
         //put pos
-        tag.putDouble("x", this.position.x);
-        tag.putDouble("y", this.position.y);
-        tag.putDouble("z", this.position.z);
+        writeView.putDouble("x", this.position.x);
+        writeView.putDouble("y", this.position.y);
+        writeView.putDouble("z", this.position.z);
         //rotation
-        tag.putFloat("pitch", this.pitch);
-        tag.putFloat("yaw", this.yaw);
+        writeView.putFloat("pitch", this.pitch);
+        writeView.putFloat("yaw", this.yaw);
         //gamemode
-        tag.putString("mode", this.gameMode.getId());
+        writeView.putString("mode", this.gameMode.getId());
         //dimension
-        tag.putString("dim", this.dim.toString());
+        writeView.putString("dim", this.dim.toString());
     }
 }
