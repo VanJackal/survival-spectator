@@ -1,6 +1,7 @@
 package com.njackal;
 
 import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -26,6 +27,8 @@ public class SurvivalSpectator implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
     public static final Logger LOGGER = LoggerFactory.getLogger("modid");
 
+	public static final String PERM_C = "survival-spectator.c";
+
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -39,7 +42,22 @@ public class SurvivalSpectator implements ModInitializer {
 	private void commandInit() {
 		LOGGER.info("Initializing Commands");
 
-		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> dispatcher.register(literal("c").executes(this::onCCommand))));
+		CommandRegistrationCallback.EVENT.register((
+				(dispatcher, registryAccess, environment) ->
+						dispatcher.register(
+								literal("c")
+										.requires(ServerCommandSource::isExecutedByPlayer)
+										.requires(source -> {
+											if (source.getServer().isDedicated()){ //multiplayer
+												return Permissions.check(source,PERM_C, 0);
+											} else {//singleplayer
+												return true;
+											}
+										})
+										.executes(this::onCCommand)
+						)
+				)
+		);
 	}
 
 	private int onCCommand(CommandContext<ServerCommandSource> context) {
