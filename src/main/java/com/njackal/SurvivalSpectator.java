@@ -73,7 +73,7 @@ public class SurvivalSpectator implements ModInitializer {
 		var specData = PLAYER_SPEC.get(player);
 		if(!player.isSpectator()) {
 			//get player details
-			Vec3d pos =  player.getPos();
+			Vec3d pos =  player.getEntityPos();
 			GameMode gamemode = player.interactionManager.getGameMode();
 			Identifier dim = source.getWorld().getRegistryKey().getValue();
 			LOGGER.info(dim.toString());
