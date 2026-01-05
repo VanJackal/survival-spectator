@@ -7,6 +7,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -48,8 +49,10 @@ public class SurvivalSpectator implements ModInitializer {
 								literal("c")
 										.requires(ServerCommandSource::isExecutedByPlayer)
 										.requires(source -> {
-											if (source.getServer().isDedicated()){ //multiplayer
-												return Permissions.check(source,PERM_C, 0);
+											MinecraftServer server = source.getServer();
+											if (server != null && server.isDedicated()){ //multiplayer
+												LOGGER.debug("Dedicated server command called");
+												return Permissions.check(source, PERM_C, true);
 											} else {//singleplayer
 												return true;
 											}
