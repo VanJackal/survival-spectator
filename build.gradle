@@ -38,8 +38,8 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Cardinal Components
-	implementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-	implementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+	include(implementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}")
+	include(implementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}")
 
 	// Permissions
 	include(implementation("me.lucko:fabric-permissions-api:${project.fabric_permissions_version}"))

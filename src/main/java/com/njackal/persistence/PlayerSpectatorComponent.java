@@ -61,17 +61,17 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     public void readData(ValueInput readView) throws NoSuchElementException {
         try {
             //position
-            double x = readView.getDouble("x",0);
-            double y = readView.getDouble("y",500);// kinda just hoping this is a safe fallback, generally these shouldn't be used though
-            double z = readView.getDouble("z",0);
-            this.position = new Vec3d(x, y, z);
+            double x = readView.getDoubleOr("x",0);
+            double y = readView.getDoubleOr("y",500);// kinda just hoping this is a safe fallback, generally these shouldn't be used though
+            double z = readView.getDoubleOr("z",0);
+            this.position = new Vec3(x, y, z);
             //rotation
-            this.pitch = readView.getFloat("pitch",0);
-            this.yaw = readView.getFloat("yaw",0);
+            this.pitch = readView.getFloatOr("pitch",0);
+            this.yaw = readView.getFloatOr("yaw",0);
             //gamemode
-            this.gameMode = GameType.byId(readView.getString("gameMode", GameType.SURVIVAL.asString()));
+            this.gameMode = GameType.byName(readView.getStringOr("gameMode", GameType.SURVIVAL.getName()));
             //dimension
-            this.dim = Identifier.tryParse(readView.getString("dim","minecraft:overworld"));
+            this.dim = Identifier.tryParse(readView.getStringOr("dim","minecraft:overworld"));
         } catch (NoSuchElementException e) { // this is to allow the schema to change (may have some weird side effects if someone logs out in spectator before the update)
             return;
         }
@@ -87,7 +87,7 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
         writeView.putFloat("pitch", this.pitch);
         writeView.putFloat("yaw", this.yaw);
         //gamemode
-        writeView.putString("mode", this.gameMode.getId());
+        writeView.putString("mode", this.gameMode.getName());
         //dimension
         writeView.putString("dim", this.dim.toString());
     }
