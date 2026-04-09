@@ -1,7 +1,7 @@
 package com.njackal.persistence;
 
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
@@ -11,7 +11,7 @@ import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 public class ComponentInit implements EntityComponentInitializer {
 
     public static final ComponentKey<IPlayerSpectatorComponent> PLAYER_SPEC =
-            ComponentRegistry.getOrCreate(Identifier.of("survival-spectator","player_spectator"), IPlayerSpectatorComponent.class);
+            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath("survival-spectator","player_spectator"), IPlayerSpectatorComponent.class);
 
     public ComponentInit(){
         //no constructor since this is just a file for registry components
