@@ -5,15 +5,15 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class SurvivalSpectator implements ModInitializer {
 				(dispatcher, registryAccess, environment) ->
 						dispatcher.register(
 								literal("c")
-										.requires(ServerCommandSource::isExecutedByPlayer)
+										.requires(CommandSourceStack::isExecutedByPlayer)
 										.requires(source -> {
 											MinecraftServer server = source.getServer();
 											if (server != null && server.isDedicated()){ //multiplayer
@@ -63,10 +63,10 @@ public class SurvivalSpectator implements ModInitializer {
 		);
 	}
 
-	private int onCCommand(CommandContext<ServerCommandSource> context) {
+	private int onCCommand(CommandContext<CommandSourceStack> context) {
 		var source = context.getSource();
 		if(!source.isExecutedByPlayer()) {
-			source.sendFeedback(() -> Text.literal("This command can only be executed by a player."),false);
+			source.sendFeedback(() -> Component.literal("This command can only be executed by a player."),false);
 			return 0;// exit early if the source isn't a player
 		}
 
@@ -76,23 +76,23 @@ public class SurvivalSpectator implements ModInitializer {
 		var specData = PLAYER_SPEC.get(player);
 		if(!player.isSpectator()) {
 			//get player details
-			Vec3d pos =  player.getEntityPos();
-			GameMode gamemode = player.interactionManager.getGameMode();
+			Vec3 pos =  player.getEntityPos();
+			GameType gamemode = player.interactionManager.getGameMode();
 			Identifier dim = source.getWorld().getRegistryKey().getValue();
 			LOGGER.info(dim.toString());
 
 			//save details, and switch mode
 			specData.setData(pos, player.getPitch(), player.getYaw(), gamemode, dim);
-			player.changeGameMode(GameMode.SPECTATOR);
+			player.changeGameMode(GameType.SPECTATOR);
 		} else {
 			//set gamemode to pre spectator mode
 			player.changeGameMode(specData.getGameMode());
 
 			//teleport back to start pos
-			Vec3d targetPos = specData.getPosition();
+			Vec3 targetPos = specData.getPosition();
 
 			//dimension
-			RegistryKey<World> dimension = RegistryKey.of(RegistryKeys.WORLD, specData.getDim());// ... half hour to find this code KEKW
+			ResourceKey<Level> dimension = ResourceKey.of(Registries.WORLD, specData.getDim());// ... half hour to find this code KEKW
 			if(dimension != null) {
 				player.teleport(source.getServer().getWorld(dimension), targetPos.x, targetPos.y, targetPos.z, Set.of(), specData.getYaw(),specData.getPitch(),false);
 			} // default to just not teleporting if the dimension is somehow not found

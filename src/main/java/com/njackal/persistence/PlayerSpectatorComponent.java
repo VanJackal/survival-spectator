@@ -1,30 +1,30 @@
 package com.njackal.persistence;
 
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.GameType;
 
 import java.util.NoSuchElementException;
 
 public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
-    private Vec3d position;
+    private Vec3 position;
     private float pitch;
     private float yaw;
-    private GameMode gameMode;
+    private GameType gameMode;
     private Identifier dim;
 
     public PlayerSpectatorComponent() {
-        position = Vec3d.ZERO; // init pos to 0
+        position = Vec3.ZERO; // init pos to 0
         this.pitch = 0f;
         this.yaw = 0f;
-        this.gameMode = GameMode.SURVIVAL;
+        this.gameMode = GameType.SURVIVAL;
         this.dim = Identifier.tryParse("minecraft:overworld");
     }
 
     @Override
-    public void setData(Vec3d pos, float pitch, float yaw, GameMode gameMode, Identifier dim) {
+    public void setData(Vec3 pos, float pitch, float yaw, GameType gameMode, Identifier dim) {
         this.position = pos;
         this.pitch = pitch;
         this.yaw = yaw;
@@ -33,7 +33,7 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     }
 
     @Override
-    public Vec3d getPosition() {
+    public Vec3 getPosition() {
         return this.position;
     }
 
@@ -48,7 +48,7 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     }
 
     @Override
-    public GameMode getGameMode() {
+    public GameType getGameMode() {
         return this.gameMode;
     }
 
@@ -58,7 +58,7 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     }
 
     @Override
-    public void readData(ReadView readView) throws NoSuchElementException {
+    public void readData(ValueInput readView) throws NoSuchElementException {
         try {
             //position
             double x = readView.getDouble("x",0);
@@ -69,7 +69,7 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
             this.pitch = readView.getFloat("pitch",0);
             this.yaw = readView.getFloat("yaw",0);
             //gamemode
-            this.gameMode = GameMode.byId(readView.getString("gameMode",GameMode.SURVIVAL.asString()));
+            this.gameMode = GameType.byId(readView.getString("gameMode", GameType.SURVIVAL.asString()));
             //dimension
             this.dim = Identifier.tryParse(readView.getString("dim","minecraft:overworld"));
         } catch (NoSuchElementException e) { // this is to allow the schema to change (may have some weird side effects if someone logs out in spectator before the update)
@@ -78,7 +78,7 @@ public class PlayerSpectatorComponent implements IPlayerSpectatorComponent{
     }
 
     @Override
-    public void writeData(WriteView writeView) {
+    public void writeData(ValueOutput writeView) {
         //put pos
         writeView.putDouble("x", this.position.x);
         writeView.putDouble("y", this.position.y);
