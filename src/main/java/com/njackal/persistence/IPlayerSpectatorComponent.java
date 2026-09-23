@@ -3,9 +3,9 @@ package com.njackal.persistence;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.GameType;
-import org.ladysnake.cca.api.v3.component.Component;
+import org.ladysnake.cca.api.v8.component.CardinalComponent;
 
-public interface IPlayerSpectatorComponent extends Component {
+public interface IPlayerSpectatorComponent extends CardinalComponent {
     /**
      * set the data of for the component
      * @param pos Position of the player
